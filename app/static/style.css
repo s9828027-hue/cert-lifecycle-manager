@@ -46,6 +46,7 @@ body {
 
 .topbar h1 { margin: 0 0 4px; font-size: 1.4rem; }
 .subtitle { margin: 0; color: var(--muted); font-size: 0.9rem; max-width: 62ch; }
+.topbar-actions { display: flex; gap: 10px; align-items: center; flex-shrink: 0; }
 
 .btn {
   border: none;

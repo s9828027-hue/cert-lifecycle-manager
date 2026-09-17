@@ -1,0 +1,34 @@
+# Render.com Blueprint — deploys the whole demo (dashboard + both mock device
+# APIs, co-hosted in one process via SINGLE_SERVICE_MODE) as a single free
+# web service. In the Render dashboard: New + -> Blueprint -> point at this
+# repo -> Apply. See README.md's "線上 Demo" section for the full walkthrough.
+#
+# Free-tier notes:
+#  - The instance spins down after ~15 minutes idle and takes ~30-50s to wake
+#    on the next request — expect a slow first load after a quiet period.
+#  - The filesystem (including the SQLite file) is wiped on every restart.
+#    AUTO_SEED_DEMO_DATA=true means that's actually convenient here: every
+#    cold start comes back up freshly seeded instead of accumulating cruft
+#    from previous visitors. Use the dashboard's "重置示範資料" button to
+#    reset mid-session without waiting for a restart.
+services:
+  - type: web
+    name: cert-lifecycle-manager
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    envVars:
+      - key: SINGLE_SERVICE_MODE
+        value: "true"
+      - key: AUTO_SEED_DEMO_DATA
+        value: "true"
+      - key: SCAN_INTERVAL_SECONDS
+        value: "300"
+      - key: EXPIRY_WARNING_DAYS
+        value: "7"
+      - key: CHAT_PROVIDER
+        value: console
+      - key: PYTHON_VERSION
+        value: "3.12.6"

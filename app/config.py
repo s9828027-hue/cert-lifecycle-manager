@@ -35,6 +35,19 @@ class Settings(BaseSettings):
     f5_api_token: str = "demo-f5-token"
     ise_api_token: str = "demo-ise-token"
 
+    # --- single-service deploy mode (for free-tier hosting: Render, Railway, ...) ---
+    # When true, app/main.py mounts the two mock device apps in-process at
+    # /mock-f5 and /mock-ise instead of expecting them as separate services,
+    # and f5/ise_api_base_url below are overridden to point at those mounted
+    # paths on this same process. This means one free web service is enough
+    # to run the whole demo — no multi-service cold-start coordination needed.
+    single_service_mode: bool = False
+    port: int = 8000
+
+    # --- auto-seeding (public hosted demo only; local/docker-compose use the
+    # scripts/seed_demo.py CLI instead so nothing surprises a first-time reader) ---
+    auto_seed_demo_data: bool = False
+
     # --- app ---
     app_name: str = "憑證自動化監控與更換管理平台"
     timezone: str = "Asia/Taipei"
@@ -43,3 +56,7 @@ class Settings(BaseSettings):
 settings = Settings()
 settings.incoming_dir.mkdir(parents=True, exist_ok=True)
 (BASE_DIR / "data").mkdir(parents=True, exist_ok=True)
+
+if settings.single_service_mode:
+    settings.f5_api_base_url = f"http://127.0.0.1:{settings.port}/mock-f5"
+    settings.ise_api_base_url = f"http://127.0.0.1:{settings.port}/mock-ise"

@@ -8,6 +8,7 @@ from app.database import get_db
 from app.models import Certificate, RenewalEvent
 from app.scheduler import scan_for_expiring_certificates
 from app.schemas import CertificateDetailOut, CertificateOut, RenewalEventOut
+from app.seed import seed_demo_data
 from app.watcher import process_certificate_file
 
 router = APIRouter(prefix="/api", tags=["api"])
@@ -42,6 +43,16 @@ def trigger_scan_now(db: Session = Depends(get_db)):
     return scan_for_expiring_certificates(db)
 
 
+@router.post("/reset-demo")
+def reset_demo(db: Session = Depends(get_db)):
+    """
+    Wipe and rebuild the demo dataset. This is a public, shared demo — anyone
+    can click the simulate/upload buttons — so a visible reset button keeps
+    it usable instead of drifting into a confusing state between visitors.
+    """
+    return seed_demo_data(db, reset=True)
+
+
 @router.post("/certificates/{cert_id}/simulate-expiry")
 def simulate_expiry(cert_id: int, days: int = 5, db: Session = Depends(get_db)):
     """Demo helper: fast-forward a certificate's expiry so the D-7 warning fires immediately."""
@@ -57,7 +68,7 @@ def simulate_expiry(cert_id: int, days: int = 5, db: Session = Depends(get_db)):
 
 
 @router.post("/certificates/{cert_id}/upload")
-async def upload_new_certificate(
+def upload_new_certificate(
     cert_id: int,
     cert_file: UploadFile = File(...),
     key_file: UploadFile = File(...),
@@ -67,6 +78,13 @@ async def upload_new_certificate(
     The web-UI equivalent of 管理者將新憑證放置固定資料夾: saves the uploaded
     cert/key into data/certs_incoming/ under the naming convention the
     watcher expects, then runs the same processing path it would use.
+
+    Deliberately a plain `def`, not `async def`: process_certificate_file()
+    makes a blocking httpx call to the device API, which in single-service
+    mode (app/config.py's single_service_mode) is this same process on the
+    same port. Running that on the event loop thread would deadlock — the
+    self-request could never be serviced while the loop waits on it. A sync
+    route runs in FastAPI's threadpool instead, so the loop stays free.
     """
     record = db.get(Certificate, cert_id)
     if record is None:
@@ -75,8 +93,8 @@ async def upload_new_certificate(
     stem = f"{record.device_type}_{record.device_name}"
     cert_path = settings.incoming_dir / f"{stem}.pem"
     key_path = settings.incoming_dir / f"{stem}.key"
-    cert_path.write_bytes(await cert_file.read())
-    key_path.write_bytes(await key_file.read())
+    cert_path.write_bytes(cert_file.file.read())
+    key_path.write_bytes(key_file.file.read())
 
     result = process_certificate_file(cert_path, db)
     if not result["ok"]:

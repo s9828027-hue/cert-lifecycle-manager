@@ -156,5 +156,18 @@ document.getElementById("scan-now").addEventListener("click", async (e) => {
   }
 });
 
+document.getElementById("reset-demo").addEventListener("click", async (e) => {
+  if (!confirm("確定要重置示範資料嗎？這會清空目前所有憑證與事件紀錄，重新建立成初始示範狀態。")) return;
+  e.target.disabled = true;
+  e.target.textContent = "重置中…";
+  try {
+    await fetchJSON("/api/reset-demo", { method: "POST" });
+    await refresh();
+  } finally {
+    e.target.disabled = false;
+    e.target.textContent = "重置示範資料";
+  }
+});
+
 refresh();
 setInterval(refresh, 5000);

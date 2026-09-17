@@ -12,7 +12,10 @@
       <h1>{{ app_name }}</h1>
       <p class="subtitle">F5 / ISE 萬用憑證監控與自動更換 Demo &mdash; 到期前 {{ warning_days }} 天自動 Chat 預警，新憑證上傳後自動更換並二次通知</p>
     </div>
-    <button id="scan-now" class="btn btn-primary">立即執行到期掃描</button>
+    <div class="topbar-actions">
+      <button id="reset-demo" class="btn btn-ghost" title="這是公開示範環境，資料為共用狀態；如果被前面的訪客弄亂了，可以在這裡重置">重置示範資料</button>
+      <button id="scan-now" class="btn btn-primary">立即執行到期掃描</button>
+    </div>
   </header>
 
   <section class="stats" id="stats">
