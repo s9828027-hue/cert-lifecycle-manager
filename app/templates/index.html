@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ app_name }}</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <h1>{{ app_name }}</h1>
+      <p class="subtitle">F5 / ISE 萬用憑證監控與自動更換 Demo &mdash; 到期前 {{ warning_days }} 天自動 Chat 預警，新憑證上傳後自動更換並二次通知</p>
+    </div>
+    <button id="scan-now" class="btn btn-primary">立即執行到期掃描</button>
+  </header>
+
+  <section class="stats" id="stats">
+    <div class="stat-card" data-key="total"><span class="stat-value">–</span><span class="stat-label">受管理憑證</span></div>
+    <div class="stat-card ok" data-key="active"><span class="stat-value">–</span><span class="stat-label">正常</span></div>
+    <div class="stat-card warn" data-key="expiring_soon"><span class="stat-value">–</span><span class="stat-label">即將到期</span></div>
+    <div class="stat-card bad" data-key="expired"><span class="stat-value">–</span><span class="stat-label">已逾期</span></div>
+  </section>
+
+  <main class="layout">
+    <section class="panel">
+      <h2>憑證清單</h2>
+      <table class="cert-table">
+        <thead>
+          <tr>
+            <th>設備</th>
+            <th>網域（萬用憑證）</th>
+            <th>到期日</th>
+            <th>剩餘天數</th>
+            <th>狀態</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody id="cert-table-body">
+          <tr><td colspan="6" class="loading">載入中…</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <aside class="panel activity">
+      <h2>最近事件</h2>
+      <ul id="event-feed" class="event-feed">
+        <li class="loading">載入中…</li>
+      </ul>
+    </aside>
+  </main>
+
+  <template id="row-template">
+    <tr>
+      <td>
+        <span class="device-badge"></span>
+        <div class="device-name"></div>
+      </td>
+      <td class="domain"></td>
+      <td class="expires"></td>
+      <td class="days-left"></td>
+      <td><span class="status-badge"></span></td>
+      <td class="actions">
+        <button class="btn btn-ghost btn-simulate">模擬 5 天後到期</button>
+        <label class="upload-label">
+          上傳新憑證(.pem)
+          <input type="file" class="cert-input" accept=".pem,.crt" hidden>
+        </label>
+        <label class="upload-label">
+          上傳私鑰(.key)
+          <input type="file" class="key-input" accept=".key" hidden>
+        </label>
+        <button class="btn btn-primary btn-upload" disabled>上傳並更換</button>
+      </td>
+    </tr>
+  </template>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

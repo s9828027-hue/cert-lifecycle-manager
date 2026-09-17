@@ -1,0 +1,30 @@
+services:
+  f5-mock:
+    build: .
+    command: uvicorn mock_devices.f5_mock:app --host 0.0.0.0 --port 9001
+    ports:
+      - "9001:9001"
+
+  ise-mock:
+    build: .
+    command: uvicorn mock_devices.ise_mock:app --host 0.0.0.0 --port 9002
+    ports:
+      - "9002:9002"
+
+  app:
+    build: .
+    depends_on:
+      - f5-mock
+      - ise-mock
+    ports:
+      - "8000:8000"
+    environment:
+      - F5_API_BASE_URL=http://f5-mock:9001
+      - ISE_API_BASE_URL=http://ise-mock:9002
+      - SCAN_INTERVAL_SECONDS=${SCAN_INTERVAL_SECONDS:-60}
+      - EXPIRY_WARNING_DAYS=${EXPIRY_WARNING_DAYS:-7}
+      - CHAT_PROVIDER=${CHAT_PROVIDER:-console}
+      - SLACK_WEBHOOK_URL=${SLACK_WEBHOOK_URL:-}
+      - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL:-}
+    volumes:
+      - ./data:/srv/data
