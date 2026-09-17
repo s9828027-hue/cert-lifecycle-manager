@@ -10,11 +10,11 @@ Examples
 --------
 Renew one of the seeded demo certs (see scripts/seed_demo.py for the list):
 
-    python scripts/generate_sample_cert.py --device-type F5 --device-name f5-dc2-dr-lb01 --domain "*.corp.example.com"
+    python scripts/generate_sample_cert.py --device-type F5 --device-name f5-demo-02 --domain "*.web.example.com"
 
 Demonstrate the failure path (mock device always rejects "fail-demo" domains):
 
-    python scripts/generate_sample_cert.py --device-type F5 --device-name f5-fail-demo-lb01 --domain "*.fail-demo.example.com"
+    python scripts/generate_sample_cert.py --device-type F5 --device-name f5-demo-04 --domain "*.fail-demo.example.com"
 """
 import argparse
 import sys
@@ -29,7 +29,7 @@ from app.config import settings  # noqa: E402
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--device-type", required=True, choices=["F5", "ISE"])
-    parser.add_argument("--device-name", required=True, help="e.g. f5-dc1-prod-lb01")
+    parser.add_argument("--device-name", required=True, help="e.g. f5-demo-01")
     parser.add_argument("--domain", required=True, help='e.g. "*.example.com" (must match an existing record)')
     parser.add_argument("--valid-days", type=int, default=365)
     args = parser.parse_args()

@@ -32,7 +32,7 @@ def generate_self_signed_wildcard(domain: str, valid_days: int = 365) -> tuple[b
 
     subject = issuer = x509.Name([
         x509.NameAttribute(NameOID.COUNTRY_NAME, "TW"),
-        x509.NameAttribute(NameOID.ORGANIZATION_NAME, "Demo Corp"),
+        x509.NameAttribute(NameOID.ORGANIZATION_NAME, "Demo Org"),
         x509.NameAttribute(NameOID.COMMON_NAME, domain),
     ])
 

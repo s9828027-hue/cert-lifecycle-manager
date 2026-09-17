@@ -7,7 +7,7 @@ from app import notifier
 def _fake_cert(**overrides):
     base = dict(
         device_type="F5",
-        device_name="f5-dc1-prod-lb01",
+        device_name="f5-demo-01",
         domain="*.example.com",
         cert_type="wildcard",
         expires_at=dt.datetime.utcnow() + dt.timedelta(days=5),

@@ -5,8 +5,8 @@ Naming convention for a dropped-in certificate (kept deliberately simple for
 the demo): `<DeviceType>_<DeviceName>.pem` with a matching `.key` file of the
 same stem, e.g.
 
-    F5_f5-dc1-prod-lb01.pem
-    F5_f5-dc1-prod-lb01.key
+    F5_f5-demo-01.pem
+    F5_f5-demo-01.key
 
 process_certificate_file() is the single entry point used both by the
 filesystem watcher (watchdog, for the "drop a file with scp/sftp" workflow)

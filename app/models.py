@@ -13,7 +13,7 @@ class Certificate(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     device_type = Column(String, nullable=False)       # "F5" | "ISE"
-    device_name = Column(String, nullable=False)        # e.g. "f5-dc1-prod-lb01"
+    device_name = Column(String, nullable=False)        # e.g. "f5-demo-01"
     domain = Column(String, nullable=False)              # e.g. "*.example.com"
     cert_type = Column(String, default="wildcard")
     serial_number = Column(String, default="")

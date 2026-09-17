@@ -20,15 +20,15 @@ from app.models import Certificate  # noqa: E402
 from app.scheduler import scan_for_expiring_certificates  # noqa: E402
 
 DEMO_CERTS = [
-    dict(device_type="F5", device_name="f5-dc1-prod-lb01", domain="*.example.com", days_left=45),
-    dict(device_type="F5", device_name="f5-dc2-dr-lb01", domain="*.corp.example.com", days_left=5),
-    dict(device_type="F5", device_name="f5-api-gw01", domain="*.api.example.com", days_left=20),
-    dict(device_type="ISE", device_name="ise-psn01", domain="*.ise.example.com", days_left=3),
-    dict(device_type="ISE", device_name="ise-guest-portal", domain="*.guest.example.com", days_left=90),
-    dict(device_type="ISE", device_name="ise-psn02", domain="*.ise-legacy.example.com", days_left=-2),
+    dict(device_type="F5", device_name="f5-demo-01", domain="*.example.com", days_left=45),
+    dict(device_type="F5", device_name="f5-demo-02", domain="*.web.example.com", days_left=5),
+    dict(device_type="F5", device_name="f5-demo-03", domain="*.api.example.com", days_left=20),
+    dict(device_type="ISE", device_name="ise-demo-01", domain="*.auth.example.com", days_left=3),
+    dict(device_type="ISE", device_name="ise-demo-02", domain="*.guest.example.com", days_left=90),
+    dict(device_type="ISE", device_name="ise-demo-03", domain="*.legacy.example.com", days_left=-2),
     # domain deliberately contains "fail-demo": mock_devices/common.py rejects any install
     # for such a domain, so this row is handy for demoing the failure / rollback path live.
-    dict(device_type="F5", device_name="f5-fail-demo-lb01", domain="*.fail-demo.example.com", days_left=6),
+    dict(device_type="F5", device_name="f5-demo-04", domain="*.fail-demo.example.com", days_left=6),
 ]
 
 

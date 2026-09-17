@@ -2,11 +2,9 @@
 
 **Certificate Lifecycle Automation for F5 / Cisco ISE Wildcard Certificates** — a self-contained demo (mock device APIs included) of an end-to-end pipeline: expiry monitoring → D-7 chat alert → admin drops in the renewed cert → API auto-install → completion alert.
 
-![CI](https://github.com/<your-github-username>/cert-lifecycle-manager/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/s9828027-hue/cert-lifecycle-manager/actions/workflows/ci.yml/badge.svg)
 ![Python](https://img.shields.io/badge/python-3.12-blue)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.141-009688)
-
-> 把 README 頂端的 `<your-github-username>` 換成你的 GitHub 帳號，CI 徽章才會正確連結。
 
 ---
 
@@ -77,7 +75,7 @@ flowchart LR
 
 ![Dashboard](docs/screenshots/dashboard.png)
 
-儀表板同時展示了：4 種狀態的憑證、一次成功更換（`f5-dc2-dr-lb01`）與一次刻意觸發的失敗案例（`f5-fail-demo-lb01`，用來示範失敗告警與稽核紀錄）。
+儀表板同時展示了：4 種狀態的憑證、一次成功更換（`f5-demo-02`）與一次刻意觸發的失敗案例（`f5-demo-04`，用來示範失敗告警與稽核紀錄）。
 
 ---
 
@@ -102,7 +100,7 @@ flowchart LR
 ### 方法一：Docker Compose（推薦）
 
 ```bash
-git clone https://github.com/<your-github-username>/cert-lifecycle-manager.git
+git clone https://github.com/s9828027-hue/cert-lifecycle-manager.git
 cd cert-lifecycle-manager
 cp .env.example .env        # 預設 CHAT_PROVIDER=console，不需 webhook 也能跑
 docker compose up --build
@@ -157,13 +155,13 @@ Slack / Discord 都可以免費申請一組 Incoming Webhook URL 做測試。
 2. 點任一筆憑證的「立即執行到期掃描」或等排程自動跑，觀察右側事件流出現「⚠️ 到期預警」，並在服務 log（或 Slack/Discord）看到通知內容
 3. 模擬管理者拿到新憑證並更換：
    ```bash
-   python scripts/generate_sample_cert.py --device-type F5 --device-name f5-dc2-dr-lb01 --domain "*.corp.example.com"
+   python scripts/generate_sample_cert.py --device-type F5 --device-name f5-demo-02 --domain "*.web.example.com"
    ```
    幾秒內儀表板該列狀態會變成「正常」、到期日更新、事件流出現「✅ 更換成功」
 4. 或直接在儀表板該列用「上傳新憑證(.pem)」「上傳私鑰(.key)」+「上傳並更換」按鈕，效果相同（不用碰終端機）
 5. 示範失敗與風控機制：
    ```bash
-   python scripts/generate_sample_cert.py --device-type F5 --device-name f5-fail-demo-lb01 --domain "*.fail-demo.example.com"
+   python scripts/generate_sample_cert.py --device-type F5 --device-name f5-demo-04 --domain "*.fail-demo.example.com"
    ```
    Mock 設備會刻意拒絕這個網域，事件流出現「❌ 更換失敗」且**原憑證到期日不會被覆蓋**——示範「更換失敗不中斷服務」的設計
 
